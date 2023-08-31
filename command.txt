@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Form Example</title>
+  </head>
+  <body>
+    <form id="myForm">
+      <input type="text" id="msgInput" placeholder="Enter your message" />
+      <button type="submit">Submit</button>
+    </form>
+
+    <div id="messageList"></div>
+
+    <script>
+      async function fetchMessages() {
+        const response = await fetch("http://localhost:8000/messages");
+        const messages = await response.json();
+
+        const messageList = document.getElementById("messageList");
+        messageList.innerHTML = "";
+
+        messages.forEach((message) => {
+          const messageElement = document.createElement("div");
+          messageElement.textContent = message.msg;
+          messageList.appendChild(messageElement);
+        });
+      }
+
+      document
+        .getElementById("myForm")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const msgInput = document.getElementById("msgInput").value;
+
+          // Send data to the backend API endpoint
+          await fetch("http://localhost:8000", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ msg: msgInput }),
+          });
+
+          // Clear the input field
+          document.getElementById("msgInput").value = "";
+
+          // Fetch and update message list
+          fetchMessages();
+        });
+
+      // Initial fetch to populate the message list
+      fetchMessages();
+
+      //1234
+      function addMessageToUI(message) {
+        const messageUl = document.getElementById("messageUl");
+        const messageLi = document.createElement("li");
+        messageLi.textContent = message.msg;
+        messageUl.appendChild(messageLi);
+      }
+      document
+        .getElementById("myForm")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const msgInput = document.getElementById("msgInput").value;
+
+          // Send data to the backend API endpoint
+          await fetch("http://localhost:8000", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ msg: msgInput }),
+          });
+
+          // Clear the input field
+          document.getElementById("msgInput").value = "";
+
+          // Add the new message to the UI
+          addMessageToUI({ msg: msgInput });
+        });
+      //1234
+    </script>
+    <div id="messageList">
+      <ul id="messageUl">
+        
+      </ul>
+    </div>
+  </body>
+</html>
